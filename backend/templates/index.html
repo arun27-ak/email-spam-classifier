@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Email Spam Classifier</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-icon">✉</span>
+            SpamGuard
+        </div>
+        <span class="status">ML POWERED</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="eyebrow">EMAIL SECURITY · MACHINE LEARNING</div>
+
+            <h1>Is your email <span>safe?</span></h1>
+
+            <p class="subtitle">
+                Check an email message using our machine learning
+                spam detection model.
+            </p>
+        </section>
+
+        <section class="classifier-card">
+            <div class="card-heading">
+                <div>
+                    <h2>Analyze your message</h2>
+                    <p>Paste the email content below.</p>
+                </div>
+                <div class="mail-icon">↗</div>
+            </div>
+
+            <form method="POST" action="/">
+                <label for="email">EMAIL MESSAGE</label>
+
+                <textarea
+                    id="email"
+                    name="email"
+                    placeholder="Paste your email message here..."
+                    maxlength="20000"
+                    required
+                >{{ message }}</textarea>
+
+                <div class="helper">
+                    Do not include passwords or sensitive personal data.
+                </div>
+
+                <button type="submit">
+                    <span>⌕</span> Check Email
+                </button>
+            </form>
+
+            {% if error %}
+                <div class="result error" role="alert">
+                    <strong>Unable to analyze</strong>
+                    <p>{{ error }}</p>
+                </div>
+            {% endif %}
+
+            {% if result %}
+                <div class="result {{ 'spam' if result == 'SPAM' else 'ham' }}"
+                     role="status">
+
+                    <div class="result-icon">
+                        {{ '!' if result == 'SPAM' else '✓' }}
+                    </div>
+
+                    <div class="result-content">
+                        <span class="result-label">CLASSIFICATION RESULT</span>
+                        <h3>
+                            {{ 'Spam Detected' if result == 'SPAM'
+                               else 'Legitimate Message (Ham)' }}
+                        </h3>
+                        <p>
+                            {% if result == 'SPAM' %}
+                                This message resembles spam in the
+                                model's training data.
+                            {% else %}
+                                This message resembles legitimate
+                                messages in the model's training data.
+                            {% endif %}
+                        </p>
+                        <div class="confidence">
+                            Estimated class probability:
+                            <strong>{{ confidence }}%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="disclaimer">
+                    Predictions can be incorrect. This result does not
+                    guarantee that an email is safe or malicious.
+                </p>
+            {% endif %}
+        </section>
+
+        <section class="features">
+            <div class="feature">
+                <span>01</span>
+                <h3>Text Analysis</h3>
+                <p>Converts message text into numerical features.</p>
+            </div>
+
+            <div class="feature">
+                <span>02</span>
+                <h3>ML Classification</h3>
+                <p>Uses a trained Naive Bayes classifier.</p>
+            </div>
+
+            <div class="feature">
+                <span>03</span>
+                <h3>Instant Result</h3>
+                <p>Shows the predicted spam or ham category.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Email Spam Classifier · Python · Flask · Scikit-learn
+    </footer>
+</body>
+</html>
